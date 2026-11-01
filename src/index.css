@@ -1,1 +1,87 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;600;700&display=swap');
+
+
+
+/* Galeria */
+#galeria {
+    text-align: center;
+    background: #eef6ff;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.galeria {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: start;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.galeria figure {
+    overflow: hidden;
+    border-radius: 18px;
+    background: #ffffff;
+    padding: 5px;
+    box-shadow: 0 10px 30px rgba(11, 59, 145, 0.12);
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.galeria figure:hover {
+    transform: scale(1.03);
+    box-shadow: 0 15px 35px rgba(11, 59, 145, 0.2);
+}
+
+.galeria img {
+    width: 300%;
+    height: auto;
+    display: block;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    #galeria {
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+
+    .galeria {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .galeria img {
+        width: 420%;
+        height: auto;
+        display: block;
+    }
+
+    .galeria figure:last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        width: calc(50% - 7.5px);
+    }
+}
+
+/* Celular */
+@media (max-width: 480px) {
+    #galeria {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .galeria {
+        grid-template-columns: 1fr;
+    }
+
+    .galeria figure:last-child {
+        width: 100%;
+    }
+
+    .galeria img {
+        height: auto;
+    }
+}
