@@ -1,133 +1,152 @@
-
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import useCapturas from "../hooks/useCapturas";
 import CaptureCard from "../components/CaptureCard";
-import useAuth from "../hooks/useAuth";
+import Footer from "../components/Footer";
+
+const filtros = ["Todas", "Estudos", "Pessoal"];
+
+const palavrasEstudo = [
+  "aula", "prova", "slide", "exercício", "exercicio", "resumo",
+  "anotação", "anotações", "anotacoes", "trabalho", "python",
+  "cálculo", "calculo", "física", "fisica", "web", "algoritmo",
+];
+
+function sugerirCategoria(titulo) {
+  const texto = titulo.toLowerCase();
+  return palavrasEstudo.some((p) => texto.includes(p)) ? "Estudos" : "Pessoal";
+}
 
 export default function SmartSave() {
-  const { usuario, logout } = useAuth();
-  const navigate = useNavigate();
+  const { capturas, carregando, erro, adicionar, mover, remover } =
+    useCapturas();
+  const [filtro, setFiltro] = useState("Todas");
+  const [novoTitulo, setNovoTitulo] = useState("");
+  const [categoriaManual, setCategoriaManual] = useState(null);
 
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todas");
+  const sugerida = sugerirCategoria(novoTitulo);
+  const categoriaEscolhida = categoriaManual ?? sugerida;
 
-  const capturas = [
-    {
-      id: 1,
-      titulo: "Anotações de programação",
-      categoria: "Estudos",
-      data: "01/11/2026",
-      descricao: "Anotações sobre lógica de programação e algoritmos.",
-    },
-    {
-      id: 2,
-      titulo: "Documento pessoal",
-      categoria: "Pessoal",
-      data: "30/10/2026",
-      descricao: "Documento identificado e organizado pelo Smart Save.",
-    },
-    {
-      id: 3,
-      titulo: "Resumo de matemática",
-      categoria: "Estudos",
-      data: "28/10/2026",
-      descricao: "Resumo de conteúdo para revisão de estudos.",
-    },
-  ];
-
-  const capturasFiltradas =
-    categoriaSelecionada === "Todas"
+  const visiveis =
+    filtro === "Todas"
       ? capturas
-      : capturas.filter(
-          (captura) => captura.categoria === categoriaSelecionada
-        );
+      : capturas.filter((c) => c.categoria === filtro);
 
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const aoEnviar = (e) => {
+    e.preventDefault();
+    if (!novoTitulo.trim()) return;
+
+    adicionar({
+      titulo: novoTitulo.trim(),
+      categoria: categoriaEscolhida,
+      icone: categoriaEscolhida === "Estudos" ? "📚" : "📷",
+    });
+
+    setNovoTitulo("");
+    setCategoriaManual(null);
+  };
 
   return (
-    <main className="min-h-screen bg-[#f5f9ff]">
-      <header className="flex flex-wrap items-center justify-between gap-4 bg-[#05005d] px-6 py-5 text-white md:px-12">
-        <h1 className="font-['Bebas_Neue'] text-3xl tracking-wide">
-          Smart Save
-        </h1>
+    <>
+      {/* Header com o mesmo estilo e botão para voltar ao início */}
+      <header className="sticky top-0 z-50 bg-[#05005d] px-[5%] py-5">
+        <nav className="flex flex-wrap items-center justify-between gap-5">
+          <Link to="/" className="font-bold text-white flex items-center gap-2 hover:opacity-90 transition">
+            <i className="bx bx-arrow-back text-lg"></i> Voltar para o Início
+          </Link>
 
-        <div className="flex items-center gap-4">
-          <span className="hidden text-sm sm:block">{usuario}</span>
-
-          <button
-            onClick={handleLogout}
-            className="rounded-lg bg-white px-4 py-2 font-bold text-[#05005d] transition hover:bg-blue-100"
-          >
-            Sair
-          </button>
-        </div>
+          <div className="flex items-center gap-4">
+            <span className="rounded-lg bg-white/10 px-4 py-2 font-semibold text-white text-sm">
+              JOVI Smart Save - Painel
+            </span>
+          </div>
+        </nav>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <section>
-          <h2 className="font-['Bebas_Neue'] text-4xl text-[#0b3b91] md:text-5xl">
-            Meu Smart Save
-          </h2>
+      <main className="px-6 py-12 md:px-[8%]">
+        <h1 className="text-center font-titulo text-3xl font-bold text-[#05005d]">
+          Minhas Capturas
+        </h1>
 
-          <p className="mt-2 text-lg text-gray-600">
-            Organize suas imagens e documentos em um só lugar.
-          </p>
-        </section>
-
-        <section className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <p className="text-gray-500">Total de capturas</p>
-            <p className="mt-2 text-4xl font-bold text-[#1457d9]">
-              {capturas.length}
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <p className="text-gray-500">Categorias disponíveis</p>
-            <p className="mt-2 text-4xl font-bold text-[#1457d9]">2</p>
-          </div>
-        </section>
-
-        <section className="mt-10">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <h2 className="font-['Bebas_Neue'] text-3xl text-[#0b3b91]">
-              Minhas capturas
-            </h2>
+        <form
+          onSubmit={aoEnviar}
+          className="mx-auto mt-8 max-w-3xl rounded-xl bg-blue-50 p-5 shadow-sm border border-blue-100"
+        >
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <input
+              type="text"
+              value={novoTitulo}
+              onChange={(e) => setNovoTitulo(e.target.value)}
+              placeholder="Nome da captura (ex: Slide da aula de Web)"
+              aria-label="Nome da captura"
+              className="flex-1 rounded-lg border border-blue-200 bg-white px-4 py-2 outline-none focus:border-[#05005d]"
+            />
 
             <select
-              value={categoriaSelecionada}
-              onChange={(event) =>
-                setCategoriaSelecionada(event.target.value)
-              }
-              className="rounded-lg border border-blue-200 bg-white px-4 py-2 text-[#102a43] outline-none focus:border-blue-600"
+              value={categoriaEscolhida}
+              onChange={(e) => setCategoriaManual(e.target.value)}
+              aria-label="Categoria"
+              className="rounded-lg border border-blue-200 bg-white px-4 py-2 outline-none focus:border-[#05005d]"
             >
-              <option value="Todas">Todas as categorias</option>
               <option value="Estudos">Estudos</option>
               <option value="Pessoal">Pessoal</option>
             </select>
+
+            <button
+              type="submit"
+              className="rounded-lg bg-[#05005d] px-5 py-2 font-semibold text-white transition hover:opacity-90"
+            >
+              Adicionar
+            </button>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {capturasFiltradas.map((captura) => (
-              <CaptureCard
-                key={captura.id}
-                titulo={captura.titulo}
-                categoria={captura.categoria}
-                data={captura.data}
-                descricao={captura.descricao}
-              />
-            ))}
-          </div>
-
-          {capturasFiltradas.length === 0 && (
-            <p className="mt-6 text-gray-500">
-              Nenhuma captura encontrada nessa categoria.
+          {novoTitulo.trim() && (
+            <p className="mt-3 text-sm text-gray-600">
+              {categoriaManual
+                ? "Categoria escolhida por você."
+                : `Sugestão automática: ${sugerida}. Você pode mudar acima.`}
             </p>
           )}
-        </section>
-      </div>
-    </main>
+        </form>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {filtros.map((f) => (
+            <button
+              key={f}
+              onClick={() => setFiltro(f)}
+              className={`rounded-lg px-5 py-2 font-semibold transition ${
+                filtro === f
+                  ? "bg-[#05005d] text-white shadow-sm"
+                  : "bg-blue-50 text-[#05005d] hover:bg-blue-100"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+
+        {carregando && <p className="mt-10 text-center text-blue-900">Carregando...</p>}
+        {erro && <p className="mt-10 text-center text-red-600">{erro}</p>}
+
+        {!carregando && visiveis.length === 0 && (
+          <p className="mt-10 text-center text-gray-500">
+            Nenhuma captura nesta categoria.
+          </p>
+        )}
+
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {visiveis.map((c) => (
+            <CaptureCard
+              key={c.id}
+              captura={c}
+              onMover={mover}
+              onRemover={remover}
+            />
+          ))}
+        </div>
+      </main>
+
+      <Footer />
+    </>
   );
 }
