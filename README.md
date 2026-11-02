@@ -101,7 +101,7 @@ Foi utilizada inteligência artificial como ferramenta de apoio durante o desenv
 
 ## Deploy
 
-Aplicação publicada na Vercel: 
+Aplicação publicada na Vercel: https://sprint4web.vercel.app
 
 ## Repositório
 
