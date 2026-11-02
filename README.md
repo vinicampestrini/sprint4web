@@ -4,8 +4,7 @@ Projeto desenvolvido para o **Challenge JOVI (FIAP, Sprint 4)**, em entrega conj
 das disciplinas de **Web Development** e **Front-End Design**.
 
 O **JOVI Smart Save** é uma funcionalidade inteligente para smartphones JOVI que ajuda
-estudantes a organizar fotos, prints e documentos do celular em categorias
-(**Estudos**, **Pessoal** e **Outros**), reduzindo a desordem da galeria e facilitando
+estudantes a organizar fotos, prints e documentos do celular em categorias, reduzindo a desordem da galeria e facilitando
 encontrar o material certo na hora de estudar.
 
 ## Tecnologias utilizadas
