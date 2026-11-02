@@ -108,10 +108,6 @@ https://github.com/vinicampestrini/sprint4web
 
 
 ## Integrantes
-
-Os nomes completos e RMs estão no arquivo `INTEGRANTES.TXT`.
-
----
                  
 - Alyson Souto         
 - Guilherme Vilela     
